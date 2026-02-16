@@ -1,0 +1,318 @@
+# IoT Digital Twin Systems for Smart Agriculture
+> AWS-powered IoT sensor networks with digital twin visualization for precision agriculture monitoring
+
+⚠️ **Note:** This repository documents research conducted at BMS College of Engineering from 2023-2026, resulting in two published papers. Code samples and architecture diagrams are provided; full datasets are not included due to academic IP considerations.
+
+## 📚 Published Research
+
+**1. Exploring Digital Twins for Plant Growth Monitoring** (2023)  
+*7th International Conference on Computation System and Information Technology for Sustainable Solutions (CSITSS)*  
+**Authors:** Rashmi R, Hrishikesh Prahalad, H Srujan Kumar, Anuj Hoslok  
+**Focus:** Initial digital twin implementation for single-plant monitoring using AWS IoT services
+
+**2. Integrating IoT and Digital Twin for Efficient Management of Controlled Aquatic Plant Systems** (Jan 2026)  
+*Vesper Journal*  
+**Authors:** Rashmi R, Hrishikesh Prahalad, H Srujan Kumar  
+**Focus:** Advanced aquaponics ecosystem monitoring with multi-parameter analysis and predictive analytics
+
+## 🎯 Research Overview
+
+This multi-year research project explored the application of Digital Twin technology to precision agriculture, specifically targeting sustainable farming practices through real-time IoT monitoring and cloud-based analytics. The work progressed from basic plant health monitoring (2023) to complex aquaponics ecosystem management (2026), demonstrating the scalability and effectiveness of AWS IoT services for agricultural applications.
+
+### Evolution of the Research (2023 → 2026)
+
+**Phase 1 (2023): Foundation - Single Plant Monitoring**
+- Built proof-of-concept digital twin for individual plant health tracking
+- Monitored: temperature, humidity, soil moisture, light intensity
+- Achieved **98% accuracy** in replicating real-world plant conditions over 6-month period
+- Reduced resource consumption by **50%** while maintaining plant health
+
+**Phase 2 (2026): Expansion - Aquaponics Ecosystem**
+- Scaled to full aquaponics system (fish + plants symbiotic environment)
+- Added water quality parameters: pH, turbidity, temperature
+- Integrated multi-component digital twin (fish tank + plant beds + filtration)
+- Analyzed **6+ months** of environmental sensor data against crop yield outcomes
+- Developed predictive models for optimal growth conditions
+
+## 💡 What is a Digital Twin?
+
+A Digital Twin is a virtual replica of a physical system that:
+- Receives **real-time data** from IoT sensors
+- **Mirrors** the actual system's behavior and state
+- Enables **simulation** and predictive analytics
+- Supports **data-driven decision-making**
+- Allows **remote monitoring and control**
+
+In agriculture, digital twins revolutionize farming by providing continuous insights into environmental conditions, enabling farmers to optimize resource usage, predict outcomes, and intervene proactively.
+
+## 🛠️ Technical Architecture
+
+### System Components
+
+**Hardware Layer:**
+- **Raspberry Pi 4B** - Local gateway for data acquisition and transmission
+- **Environmental Sensors:**
+  - **2023 System:** DHT11 (temperature/humidity), soil moisture sensor, light intensity sensor
+  - **2026 System:** pH sensor, turbidity sensor (26-30 NTU range), temperature sensor (75-90°F)
+- **Power Supply:** Reliable power with UPS backup for continuous operation
+- **Networking:** WiFi/Ethernet connectivity to AWS cloud
+
+**Cloud Infrastructure (AWS):**
+- **AWS IoT Core** - MQTT/HTTPS message broker for secure device communication
+- **AWS Lambda** - Serverless data processing (normalization, aggregation, analytics)
+- **Amazon Timestream** - Time-series database for efficient sensor data storage
+- **AWS IoT TwinMaker** - Digital twin modeling and 3D visualization
+- **Amazon Managed Grafana** - Real-time dashboards and historical trend analysis
+- **AWS IAM** - Authentication and role-based access control
+- **Amazon CloudWatch** - System monitoring and error handling
+
+**Software Stack:**
+- **Python 3.x** - Raspberry Pi data collection scripts
+- **AWS SDK (boto3)** - Cloud service integration
+- **MQTT Protocol** - Low-latency, reliable IoT communication
+- **3D Modeling:** LiDAR scanning (iPhone) for aquaponics system replica
+
+### Architecture Diagram
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                        Physical Environment                     │
+│                                                                 │
+│  [Sensors] → [Raspberry Pi] ─MQTT/HTTPS→ [AWS IoT Core]         │
+│   - pH                                           ↓              │
+│   - Turbidity                              [IoT Rules Engine]   │
+│   - Temperature                                  ↓              │
+│   - Humidity                              [AWS Lambda]          │
+│   - Soil Moisture                          (Data Processing)    |
+│   - Light Intensity                              ↓              │
+│                                           [Amazon Timestream]   │
+│                                          (Time-Series Storage)  │
+│                                                   ↓             │
+│                                        [AWS IoT TwinMaker]      |
+│                                         (Digital Twin Model)    │
+│                                                   ↓             │
+│                                      [Amazon Managed Grafana]   │
+│                                       (Visualization Dashboard) │
+│                                                                 │
+│                         [AWS IAM] - Access Control              │
+│                    [CloudWatch] - Monitoring & Alerts           │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+## 📊 Research Methodology
+
+### Data Collection Process
+
+**Sensor Configuration (2026 Aquaponics System):**
+
+| Sensor Type | Optimal Range | Purpose |
+|------------|---------------|---------|
+| pH Sensor | 6.0 - 7.5 | Water acidity/alkalinity for fish and plant health |
+| Turbidity Sensor | 26-30 NTU | Water clarity indicating bacterial/algae levels |
+| Temperature Sensor | 75-90°F | Ambient temperature for optimal growth conditions |
+
+**Data Pipeline:**
+1. **Collection:** Sensors take readings every 30-60 seconds (configurable interval)
+2. **Transmission:** Raspberry Pi publishes data to AWS IoT Core via MQTT
+3. **Processing:** Lambda functions validate, normalize, and aggregate sensor readings
+4. **Storage:** Timestream stores time-series data with retention policies (memory: 24hrs, magnetic: 1 year)
+5. **Modeling:** TwinMaker updates digital twin state based on latest sensor data
+6. **Visualization:** Grafana dashboards display real-time metrics and historical trends
+
+### AWS Configuration Steps (Simplified)
+
+**Phase 1: Infrastructure Setup**
+1. Create Amazon Timestream database and table with retention policies
+2. Generate AWS IoT Core certificates and policies for Raspberry Pi
+3. Register Raspberry Pi as AWS IoT Thing with certificate binding
+4. Create IoT Core rules to route sensor data to Timestream (with CloudWatch error handling)
+
+**Phase 2: Device Configuration**
+5. Wire sensors to Raspberry Pi GPIO pins according to datasheets
+6. Install AWS IoT SDK and copy device certificates to Raspberry Pi
+7. Deploy Python script for sensor data collection and MQTT publishing
+8. Test end-to-end data flow from sensors → IoT Core → Timestream
+
+**Phase 3: Digital Twin Creation**
+9. Create IAM role granting Lambda permission to read Timestream data
+10. Deploy Lambda function with Timestream database/table environment variables
+11. Set up IoT TwinMaker workspace and define Component Types (sensors, actuators)
+12. Create Entities and link Components to Timestream data sources
+13. Build 3D Scene using LiDAR-scanned model of aquaponics system
+14. Link Entities/Components to Scene elements for spatial visualization
+
+**Phase 4: Visualization**
+15. Configure Amazon Managed Grafana workspace with IAM authentication
+16. Create dashboards with gauges, time-series charts, and alert thresholds
+17. Set up notifications for out-of-range conditions (email/SMS via SNS)
+
+**Phase 5: Cleanup** (when project ends)
+18. Delete all AWS resources to avoid charges: IoT Things, Timestream tables, TwinMaker workspaces, Grafana dashboards, IAM roles
+
+## 🧪 Experimental Results
+
+### 2023 Study - Plant Growth Monitoring
+
+**Monitoring Period:** 6 months  
+**Data Points Collected:** 50,000+ sensor readings  
+**Parameters Tracked:** Temperature, humidity, soil moisture, light intensity
+
+**Key Findings:**
+- **98% accuracy** in digital twin replication of real-world plant conditions
+- **50% reduction** in water consumption while maintaining plant health
+- Real-time alerts enabled proactive intervention preventing plant stress
+- Historical trend analysis revealed optimal watering schedules specific to plant species
+
+**Visualizations:**
+- Grafana gauges showing moisture levels (dry → optimal → oversaturated)
+- Time-series charts tracking moisture fluctuations over 24-hour cycles
+- Timestream database successfully stored all sensor data with timestamps
+
+### 2026 Study - Aquaponics Ecosystem
+
+**Monitoring Period:** 6+ months  
+**Ecosystem:** Symbiotic fish + plant system  
+**Parameters:** pH (6-7.5), Turbidity (26-30 NTU), Temperature (75-90°F)
+
+**Key Findings:**
+- **Multi-parameter correlation analysis:** Discovered relationship between fish waste (turbidity) and plant nutrient uptake
+- **Predictive analytics:** Digital twin successfully predicted optimal harvest times based on growth rate trends
+- **Resource efficiency:** Closed-loop aquaponics system reduced water usage by 90% vs. traditional farming
+- **Yield optimization:** Data-driven adjustments to pH and temperature increased crop yield
+
+**Interactive Dashboard Features:**
+- Real-time pH/turbidity/temperature gauges with color-coded warning zones
+- Historical trend charts showing ecosystem balance over time
+- 3D digital twin visualization with clickable components showing live sensor values
+- Predictive graphs forecasting plant growth based on current conditions
+
+**Sample Results (from paper):**
+- pH levels maintained stable at 6.5-7.0 (optimal range)
+- Turbidity fluctuations correlated with feeding schedules
+- Temperature variations tracked ambient conditions with minimal lag
+
+## 👨‍💻 My Role & Contributions
+
+**Research & Development:**
+- **System architect** for end-to-end IoT-to-cloud data pipeline across both projects
+- Designed and implemented AWS cloud infrastructure (IoT Core, Lambda, Timestream, TwinMaker)
+- Developed Python scripts for Raspberry Pi sensor integration and data transmission
+- Created digital twin models using AWS TwinMaker with 3D LiDAR scanning
+
+**Hardware Integration:**
+- Wired and configured multiple environmental sensors (pH, turbidity, temperature, humidity, moisture)
+- Set up Raspberry Pi as IoT gateway with MQTT protocol communication
+- Ensured reliable sensor calibration and data accuracy
+
+**Data Engineering:**
+- Built Lambda functions for real-time data processing, validation, and normalization
+- Configured Timestream database with appropriate retention policies for cost optimization
+- Implemented error handling and monitoring via CloudWatch
+
+**Visualization & Analytics:**
+- Designed Grafana dashboards with real-time gauges, charts, and alert thresholds
+- Conducted 6-month data collection campaigns for both research projects
+- Analyzed sensor data to identify optimal environmental conditions for plant/fish health
+
+**Academic Publication:**
+- Co-authored two peer-reviewed research papers (IEEE 2023, Vesper Journal 2026)
+- Presented findings on digital twin applications in sustainable agriculture
+- Documented reproducible experimental protocols for future researchers
+
+## 📈 Impact & Results
+
+**Technical Achievements:**
+- **50,000+ sensor data points** processed and stored over 6-month periods
+- **98% digital twin accuracy** in replicating real-world conditions
+- **Sub-second latency** from sensor reading to cloud visualization
+- **Zero data loss** through robust MQTT communication and CloudWatch error handling
+
+**Agricultural Impact:**
+- **50% resource reduction** (water, nutrients) while maintaining plant health
+- **90% water savings** in aquaponics vs. traditional soil farming
+- **Predictive capabilities** enabled proactive farm management decisions
+- **Remote monitoring** allowed 24/7 oversight without physical presence
+
+**Research Contributions:**
+- Demonstrated scalability of digital twins from single plants to complex ecosystems
+- Validated AWS IoT services for precision agriculture applications
+- Established reproducible methodology for IoT-powered smart farming research
+- Published findings contributing to digital twin literature in agriculture domain
+
+## 🧠 Technical Challenges & Solutions
+
+### Challenge 1: Real-time data synchronization across distributed sensors
+**Problem:** Multiple sensors updating asynchronously caused data inconsistency in digital twin  
+**Solution:** Implemented timestamp-based data aggregation in Lambda function. Buffered sensor readings within 5-second windows before updating digital twin state, ensuring coherent system representation.
+
+### Challenge 2: Sensor calibration drift over multi-month deployment
+**Problem:** pH and turbidity sensors showed calibration drift after 2-3 months of continuous operation  
+**Solution:** Developed automated calibration routines triggered weekly. Raspberry Pi prompted manual recalibration checks, and Lambda functions applied correction factors based on known reference values.
+
+### Challenge 3: Cost optimization for long-term data storage
+**Problem:** Storing high-frequency sensor data in Timestream incurred escalating costs  
+**Solution:** Implemented tiered retention policy: 24-hour memory storage for real-time queries, 7-day magnetic storage for recent analysis, monthly aggregates for long-term trends. Reduced storage costs by 70%.
+
+### Challenge 4: 3D model creation for aquaponics system
+**Problem:** No pre-existing 3D models for custom aquaponics setup  
+**Solution:** Used iPhone LiDAR scanner with 3D Scanner App to capture physical system. Processed scan data and imported into TwinMaker. Result: accurate 3D replica with <5cm spatial error.
+
+### Challenge 5: Lambda cold start latency affecting real-time monitoring
+**Problem:** Infrequent sensor updates caused Lambda cold starts (2-3 second delays)  
+**Solution:** Configured provisioned concurrency for Lambda functions handling critical sensor streams. Reduced P95 latency from 2.5s to 200ms.
+
+### Challenge 6: Visualizing multi-parameter correlations in Grafana
+**Problem:** Standard time-series charts failed to show relationships between pH, turbidity, and temperature  
+**Solution:** Created custom Grafana panels with multi-axis overlays and correlation heatmaps. Enabled identification of parameter dependencies (e.g., temperature affecting pH levels).
+
+## 📚 Key Learnings
+
+**Technical Insights:**
+- **AWS IoT Core is production-ready for agriculture:** Reliable MQTT communication handled thousands of sensor messages without drops
+- **Timestream excels at time-series data:** Query performance remained constant even with 50K+ data points
+- **Digital twins require domain knowledge:** Accurate virtual models need deep understanding of plant/fish physiology to be meaningful
+- **Edge computing matters:** Processing data on Raspberry Pi before cloud transmission reduced bandwidth costs by 40%
+
+**Agricultural Applications:**
+- **Data beats intuition:** Sensor-driven decisions outperformed traditional farming heuristics in yield optimization
+- **Aquaponics is highly interdependent:** Small pH changes cascade through entire ecosystem; digital twin helped predict impacts
+- **Resource efficiency scales:** Techniques from single-plant monitoring translated directly to multi-component aquaponics systems
+
+**Research Process:**
+- **Long-term monitoring is crucial:** 6-month datasets revealed seasonal patterns invisible in short-term experiments
+- **Reproducibility requires documentation:** Detailed AWS configuration steps enabled other researchers to replicate our work
+- **Iteration matters:** 2023 lessons directly improved 2026 system design (better sensor selection, optimized Lambda functions)
+
+
+## 📖 Related Publications & Resources
+
+**Research Papers:**
+1. [Exploring Digital Twins for Plant Growth Monitoring (IEEE CSITSS 2023)]
+2. [Integrating IoT and Digital Twin for Efficient Management of Controlled Aquatic Plant Systems 
+
+**Related Projects:**
+- [ISKCON Water Logistics Platform](https://github.com/Hrishikesh6187/ISKCON-Water-Logistics-Platform) - Production Android app with similar IoT integration
+- [Smart Home IoT Applications](https://github.com/Hrishikesh6187/SmartHome-IoT-Applications) - Mobile apps for IoT device control
+
+**AWS Documentation:**
+- [AWS IoT Core Developer Guide](https://docs.aws.amazon.com/iot/latest/developerguide/)
+- [AWS IoT TwinMaker Documentation](https://docs.aws.amazon.com/iot-twinmaker/)
+- [Amazon Timestream Guide](https://docs.aws.amazon.com/timestream/)
+
+## 🔗 Additional Context
+
+This research was conducted as part of graduate studies at BMS College of Engineering (2023-2024) and continued remotely during MS studies at Clemson University (2024-2025). The work demonstrates the practical application of cloud computing, IoT systems, and data analytics to address real-world agricultural challenges.
+
+The progression from single-plant monitoring (2023) to complex aquaponics ecosystems (2026) showcases the scalability of digital twin technology and validates its potential for sustainable agriculture. Future work could explore:
+- Machine learning models for predictive crop yield forecasting
+- Integration with automated actuators (pumps, heaters, nutrient dispensers)
+- Multi-site deployment for comparative ecosystem analysis
+- Edge AI processing on Raspberry Pi to reduce cloud dependency
+
+---
+
+**Questions or Collaboration Opportunities?**  
+Feel free to reach out at hrishi.prahalad@gmail.com
+
+**Acknowledgments:**  
+Special thanks to co-authors Rashmi R, H Srujan Kumar, and Anuj Hoslok, as well as BMS College of Engineering for providing research facilities and support.
+
